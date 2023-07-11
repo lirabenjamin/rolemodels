@@ -3,7 +3,7 @@
     "path": "~/Library/CloudStorage/GoogleDrive-blira@sas.upenn.edu/My Drive/0 | Research/rolemodels/s2/analysis/Data checklist.R",
     "project_path": "analysis/Data checklist.R",
     "type": "r_source",
-    "hash": "3242142606",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1689105978263.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1,23",
-        "scrollLine": "0"
+        "cursorPosition": "250,0",
+        "scrollLine": "240"
     },
     "folds": "",
     "lastKnownWriteTime": 1689106291,

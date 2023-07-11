@@ -29,13 +29,13 @@ table_correlations
 ### Table 3. Regressions for Standards
 ```{r}
 #| fig-width: 10
-knitr::include_graphics("regressions_standards.png")
+knitr::include_graphics("regressions_standards.png",dpi = 1000)
 ```
 
 ### Table 4. Regressions predicting self control from standards
 ```{r}
 #| fig-width: 10
-knitr::include_graphics("regressions_self_control.png")
+knitr::include_graphics("regressions_self_control.png",dpi = 1000)
 ```
 
 
