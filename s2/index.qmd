@@ -1,7 +1,9 @@
 ---
 title: "Friends and Role Models Pilot"
 format: html
+toc: true
 editor: visual
+
 ---
 
 I ran a quick pilot with N = 30 people on prolific. People seemed to understand the survey, and took a median time of 3 minutes to complete the survey. We found that: 
@@ -54,6 +56,12 @@ plot_sc_friends_exemplars_sqrt
 ```{r}
 #| fig-width: 10
 plot_main_sqrt
+```
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+plot_main_bendy
 ```
 
 ### Figures. Raw

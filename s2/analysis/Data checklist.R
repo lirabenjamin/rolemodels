@@ -11,6 +11,9 @@ library(qualtRics)
 # IDs available at https://upenn.co1.qualtrics.com/Q/QualtricsIdsSection/IdsSection
 raw = qualtRics::fetch_survey("SV_4YParUIsOhhJjoy", force_request = T)
 
+raw %>% slice_tail(n = 1) %>% select(starts_with("standard"))
+
+
 # Prior general cleaning ----
 data = raw %>% 
   
@@ -68,6 +71,14 @@ data = data |>
   filter(!(exemplar1_minutes == 0 | exemplar2_minutes == 0))
 
 # Managing your data (i.e., ensuring data hygiene) ----
+data %>% select(standard10:standard0, friend1_minutes:exemplar2_minutes) %>%
+pivot_longer(everything()) %>%
+mutate(name = fct_inorder(name)) %>%
+ggplot(aes(value))+
+geom_histogram(bins = 10)+
+geom_vline(xintercept = 120, color = "red")+
+labs(x = NULL, y = NULL)+
+facet_wrap(~name, scales = "free", nrow = 1) #Histogram for all vars
 
 # Eyeball the data. Do you see any gaping “holes” (missing data)?
 missing_col = data %>% is.na %>% colSums()
@@ -197,7 +208,42 @@ plot_main_sqrt = data |>
   facet_wrap(~outcome, scales = "free", nrow = 1)+
   scale_color_brewer(palette = "Set1")+
   labs(x = "Peer Minutes of Exercise - square-root", y = "Outcome Value", color = "")
+plot_main_sqrt
 
+# Bendy plot
+plot_main_bendy = data |> 
+  select(friend_min, exemplar_min, starts_with("standar"), sc_self) |>  
+  pivot_longer(1:2) |> 
+  pivot_longer(1:4, names_to = "outcome", values_to = "outcome_value") |> 
+  mutate(
+    name = ifelse(name == "friend_min", "Friend Minutes","Role Model Minutes"),
+    outcome = case_when(
+      outcome == "standard0" ~ "Standard - 0",
+      outcome == "standard5" ~ "Standard - 5",
+      outcome == "standard10" ~ "Standard - 10",
+      outcome == "sc_self" ~ "Self-reported self-control"
+    ),
+    outcome = fct_inorder(outcome) |> fct_rev(),
+    value_sqrt = sqrt(value)
+  ) |> 
+  group_by(outcome, name) |>
+  nest() %>%
+  mutate(
+    model = map(data, ~lm(outcome_value ~ I(sqrt(value)), data = .x)),
+    aug = map(model, ~broom::augment(.x, interval = 'confidence'))
+  ) %>%
+  unnest(aug) %>%
+  mutate(value = `I(sqrt(value))`^2) %>%
+  # filter(outcome != "Self-reported self-control") %>%
+  ggplot(aes(value, outcome_value, color = name))+
+  geom_point(alpha = .5)+
+  geom_ribbon(aes(ymin = .lower, ymax = .upper, fill = name), alpha = .2, color = NA)+
+  geom_line(aes(y = .fitted), alpha = 1, linewidth = 1)+
+  facet_wrap(~outcome, scales = "free", nrow = 1)+
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1", guide = F)+
+  labs(x = "Peer Minutes of Exercise", y = "Outcome Value", color = "")
+plot_main_bendy
 # Analyze
 
 # Outliers
