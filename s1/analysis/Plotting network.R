@@ -1,4 +1,4 @@
-clean.l = read_rds("Data/clean.l.rds")
+clean.l = read_rds("s1/data/clean.l.rds")
 dat = clean.l %>% 
   filter(time == "T3",school == "p2") %>% 
   select(1,pn_bf1,pn_bf2) %>% 
@@ -12,7 +12,7 @@ networkD3::simpleNetwork(Data = dat %>% filter(from != to),
                          width = "1000px",
                          Source = "from",
                          Target = "to",
-                         charge = -5,linkDistance = 5,zoom = T)
+                         charge = -1,linkDistance = 5,zoom = T)
 
 clean.l %>% filter(!(is.na(pn_bf1)&is.na(pn_bf2))) %>% 
   count(time,school ) %>% spread(school, n)
@@ -20,6 +20,7 @@ clean.l %>% filter(!(is.na(pn_bf1)&is.na(pn_bf2))) %>%
 # devtools::install_github("briatte/ggnet")
 # devtools::install_github("lirabenjamin/Ben")
 # install.packages("networkD3")
+install.packages("GGally")
 
 library(ggnet)
 library(network)
@@ -41,12 +42,12 @@ for(t in c("T1","T2", "T3","T4")){
     net = network(dat %>% 
                     filter(is.na(dat)%>%rowSums == 0) %>%
                     filter(from != to) %>% 
-                    slice(-567),
+                    unique(),
                   multiple = F,
                   directed = T)
     GGally::ggnet2(net,size = 2,arrow.size = 3,arrow.gap = .005,arrow.type = "open")
-    ggsave(filename = glue::glue("Output/Network Plots/{t}-{s}.png"))
-    ggsave(filename = glue::glue("Output/Network Plots/{t}-{s}.png"))
+    ggsave(filename = glue::glue("s1/figures/Network Plots/{t}-{s}.png"))
+    ggsave(filename = glue::glue("s1/figures/Network Plots/{t}-{s}.png"))
   }
   }
 
@@ -63,6 +64,7 @@ filter_net = function(data,x){
 dat %>%
   filter(is.na(dat) %>% rowSums == 0) %>%
   filter(to != from) %>% 
+  unique()  %>%
   # filter_net(30) %>% 
   # filter(to == 2063 | from == 2063| to == 2364|from == 2364) %>% 
   network(directed = T,loops = T) %>% 
