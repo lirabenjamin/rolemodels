@@ -286,11 +286,12 @@ data %>%
       domain = c(-.80, 0,.80)
     ))
 
+# replicating reference bias
 data %>% 
   group_by(condition) %>%
   nest() %>%
   mutate(
-    lm_model = map(data, ~lm(sc_self ~ friend_min + exemplar_min + self_minutes, data = .x)),    
+    lm_model = map(data, ~lm(sc_self ~ friend_min_sqrt + exemplar_min_sqrt + self_minutes, data = .x)),    
     lm_beta = map(lm_model, lm.beta::lm.beta),
     tidy = map(lm_beta, broom::tidy)
   ) %>% 
@@ -299,13 +300,14 @@ data %>%
   gt()  %>% 
   fmt_number()
 
+# predicting standards
 data %>% 
   group_by(condition) %>%
   pivot_longer(standard10:standard0) %>% 
   group_by(condition, name) %>%
   nest() %>%
   mutate(
-    lm_model = map(data, ~lm(value ~ friend_min + exemplar_min + self_minutes, data = .x)),    
+    lm_model = map(data, ~lm(value ~ friend_min_sqrt + exemplar_min_sqrt + self_minutes, data = .x)),    
     lm_beta = map(lm_model, lm.beta::lm.beta),
     tidy = map(lm_beta, broom::tidy)
   ) %>% 
