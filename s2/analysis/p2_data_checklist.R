@@ -35,6 +35,7 @@ data = raw %>%
   # Drop people you don't want (previews, pilots, too young, attention checks...)
   filter(DistributionChannel == "anonymous") |> 
   filter(StartDate > lubridate::ymd_hms("2023-08-15 00:00:00")) |>
+  filter(StartDate < lubridate::ymd_hms("2023-08-18 00:00:00")) %>%
 
   # Drop variables you wont need
   select(id = ResponseId,e_sc_self:suggestion_box)
@@ -259,17 +260,16 @@ data %>%
   select(self_minutes,friend1_minutes, friend2_minutes, exemplar1_minutes, exemplar2_minutes) %>% Ben::harcor() %>% gt()
 
 
-mtcars %>% gt()
-
-data %>% select(condition, matches("minutes")) %>% 
+data %>% 
+  select(condition, matches("minutes")) %>% 
   group_by(condition) %>%
   summarise(
-    exemplars = cor(exemplar1_minutes, exemplar2_minutes),
-    friends = cor(friend1_minutes, friend2_minutes),
-    cross11 = cor(exemplar1_minutes, friend1_minutes),
-    cross12 = cor(exemplar1_minutes, friend2_minutes),
-    cross21 = cor(exemplar2_minutes, friend1_minutes),
-    cross22 = cor(exemplar2_minutes, friend2_minutes)
+    exemplars = cor(exemplar1_minutes, exemplar2_minutes, use = "pairwise.complete.obs"),
+    friends = cor(friend1_minutes, friend2_minutes, use = "pairwise.complete.obs"),
+    cross11 = cor(exemplar1_minutes, friend1_minutes, use = "pairwise.complete.obs"),
+    cross12 = cor(exemplar1_minutes, friend2_minutes, use = "pairwise.complete.obs"),
+    cross21 = cor(exemplar2_minutes, friend1_minutes, use = "pairwise.complete.obs"),
+    cross22 = cor(exemplar2_minutes, friend2_minutes, use = "pairwise.complete.obs")
   ) %>%
   mutate(avg_cross = (cross11 + cross12 + cross21 + cross22)/4) %>% 
   select(-cross11, -cross12, -cross21, -cross22) %>% 
@@ -496,7 +496,8 @@ models = data %>%
 models  %>% 
   pull(lm_model) %>% 
   stargazer::stargazer(
-    star.cutoffs = c(.05, .01, .001), omit.stat = c("F", "ser"),
+    star.cutoffs = c(.05, .01, .001), 
+    # omit.stat = c("F", "ser"),
     column.labels = models$condition,
     add.lines = list(
       c("Difference between friend and role model beta",models$estimate %>% Ben::numformat(3)),
@@ -590,9 +591,14 @@ self_minutes ~ standard10 + fb*friend_minutes + eb*exemplar_minutes
 standard10 ~ fs*friend_minutes + es*exemplar_minutes
 friend_minutes~~exemplar_minutes"
 data.z = data %>% group_by(condition)  %>% mutate_if(is.numeric, scale) %>% ungroup 
-fit = sem(model, data = data.z, group = "condition", group.equal = c("regressions"))
+fit_constrain = sem(model, data = data.z, group = "condition", group.equal = c("regressions"))
+fit = sem(model, data = data.z, group = "condition")
 fit %>% summary(standardized = T, fit.measures = T)
+fit_constrain %>% summary(standardized = T, fit.measures = T)
 modindices(fit) %>% arrange(mi)
+
+# compare models
+anova(fit, fit_constrain)
 
 # Wald test
 test_result <- lavTestWald(fit, constraints = "fs - es == 0")
