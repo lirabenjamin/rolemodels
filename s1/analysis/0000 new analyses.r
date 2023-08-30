@@ -135,7 +135,6 @@ write_rds(g, "s1/data/graph.rds")
 
 # network plots ####
 
-
 a = filter_graph(graph = g, type = "both", time = "T1")
 # filter one school
 a = delete.vertices(a, which(V(a)$school != "p2"))
@@ -226,6 +225,39 @@ edgelist %>%
   count(pn) %>%
   pivot_wider(names_from = pn, values_from = n) %>% 
   mutate(double_ratio = both/(bf+scw+both))
+
+# Self, Role models and friends GPA 
+attr_long
+edgelist %>% 
+  left_join(attr_long %>% select(StudyID, time, coregpa), by = c("from" = "StudyID", "time" = "time")) %>%
+  rename(coregpa_own = coregpa) %>%
+  left_join(attr_long %>% select(StudyID, time, coregpa), by = c("to" = "StudyID", "time" = "time")) %>%
+  rename(coregpa_other = coregpa) %>% 
+  mutate(ego_has_higher_gpa = coregpa_own > coregpa_other) %>% 
+  group_by(time, pn) %>%
+  filter(!is.na(ego_has_higher_gpa)) %>%
+  count(ego_has_higher_gpa) %>% 
+  mutate(
+    prop = n/sum(n),
+    ci = 1.96 * sqrt(prop*(1-prop)/sum(n))
+    ) %>%
+  mutate(
+    pn = ifelse(pn == "bf", "Close Friends", "Exemplars"),
+    ego_has_higher_gpa = ifelse(ego_has_higher_gpa, "Ego has higher GPA", "Ego has lower GPA")
+  ) %>%
+  ggplot(aes(time, prop, group = paste(ego_has_higher_gpa, pn), color = pn, lty = ego_has_higher_gpa)) +
+  geom_line() +
+  geom_point()+
+  geom_ribbon(aes(ymin=prop-ci, ymax=prop+ci, fill = pn), width=0.2, color = NA, alpha = .3) +  # add error bars for CI
+  geom_text(aes(label = Ben::numformat(prop, 2)), vjust = 2, size = 2.5) +
+  scale_color_brewer(palette = "Set1")+
+  scale_fill_brewer(palette = "Set1")+
+  facet_grid(~pn)+
+  geom_hline(yintercept = .5, linetype = "dashed")+
+  theme(legend.position = c(.2, .2))+
+  labs(x = "Time", y = "Proportion of Ties", color = "Tie Type", lty = "")+
+  guides(color = 'none', fill = 'none')
+ggsave("s1/output/exemplars have higher gpa.pdf", width = 5, height = 3, units = 'in')
 
 # Network correlations
 correlate_nets = function(net1, net2, directed = T){
