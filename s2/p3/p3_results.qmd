@@ -17,7 +17,7 @@ library(gt)
 
 I ran a quick pilot with N = `r nrow(data)` people on prolific. People seemed to understand the survey, and took a median time of `r mean_duration` minutes to complete the survey. We found that: 
 
-### Compared to before, people now report the same level of self-control across conditions.
+### No differences in self control across domains
 
 These domains seem to have less social desirability compared to punctuality and drinking from before.
 
@@ -45,13 +45,19 @@ Only for bedtime.
 knitr::include_graphics("figures/standards.png")
 ```
 
-### Standards predict self ratings
+### Standards negatively predict self ratings
 
 ```{r}
 #| output: asis
-data.z %>% 
-  lm(sc_self ~ standard10 + self_minutes, data = .) %>% 
-  stargazer::stargazer(type = "html")
+data.z = data %>% group_by(condition) %>% mutate_if(is.numeric,scale) %>% ungroup()
+
+all = data.z %>% lm(sc_self ~ standard10 + self_minutes, data = .)
+
+m1 = lm(sc_self ~ standard10 + self_minutes, data = data.z %>% filter(condition == "bedtime"))
+m2 = lm(sc_self ~ standard10 + self_minutes, data = data.z %>% filter(condition == "healthy eating"))
+m3 = lm(sc_self ~ standard10 + self_minutes, data = data.z %>% filter(condition == "saving"))
+m4 = lm(sc_self ~ standard10 + self_minutes, data = data.z %>% filter(condition == "work"))
+stargazer::stargazer(type = "html", column.labels = c("All","Bedtime","Healthy Eating","Saving","Work"), all, m1,m2,m3,m4)
 ```
 
 ### We can put it all together in a path model
