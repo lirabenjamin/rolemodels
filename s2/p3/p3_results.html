@@ -82,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#no-differences-in-self-control-across-domains" id="toc-no-differences-in-self-control-across-domains" class="nav-link active" data-scroll-target="#no-differences-in-self-control-across-domains">No differences in self control across domains</a></li>
   <li><a href="#we-still-replicate-our-reference-bias-findings-with-some-heterogeneity." id="toc-we-still-replicate-our-reference-bias-findings-with-some-heterogeneity." class="nav-link" data-scroll-target="#we-still-replicate-our-reference-bias-findings-with-some-heterogeneity.">We still replicate our reference bias findings, with some heterogeneity.</a></li>
   <li><a href="#exemplars-predict-standars-and-more-so-than-friends" id="toc-exemplars-predict-standars-and-more-so-than-friends" class="nav-link" data-scroll-target="#exemplars-predict-standars-and-more-so-than-friends">Exemplars predict standars, and more so than friends…</a></li>
-  <li><a href="#standards-predict-self-ratings" id="toc-standards-predict-self-ratings" class="nav-link" data-scroll-target="#standards-predict-self-ratings">Standards predict self ratings</a></li>
+  <li><a href="#standards-negatively-predict-self-ratings" id="toc-standards-negatively-predict-self-ratings" class="nav-link" data-scroll-target="#standards-negatively-predict-self-ratings">Standards negatively predict self ratings</a></li>
   <li><a href="#we-can-put-it-all-together-in-a-path-model" id="toc-we-can-put-it-all-together-in-a-path-model" class="nav-link" data-scroll-target="#we-can-put-it-all-together-in-a-path-model">We can put it all together in a path model</a></li>
   <li><a href="#like-before-results-are-not-explainable-by-differences-in-difficulty-of-recall-for-friends-and-role-models" id="toc-like-before-results-are-not-explainable-by-differences-in-difficulty-of-recall-for-friends-and-role-models" class="nav-link" data-scroll-target="#like-before-results-are-not-explainable-by-differences-in-difficulty-of-recall-for-friends-and-role-models">Like before, results are not explainable by differences in difficulty of recall for friends and role models</a></li>
   <li><a href="#results-are-not-moderated-by-importance" id="toc-results-are-not-moderated-by-importance" class="nav-link" data-scroll-target="#results-are-not-moderated-by-importance">Results are not moderated by importance</a></li>
@@ -158,8 +158,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="standards-predict-self-ratings" class="level3">
-<h3 class="anchored" data-anchor-id="standards-predict-self-ratings">Standards predict self ratings</h3>
+<section id="standards-negatively-predict-self-ratings" class="level3">
+<h3 class="anchored" data-anchor-id="standards-negatively-predict-self-ratings">Standards negatively predict self ratings</h3>
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data.z <span class="ot">=</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(condition) <span class="sc">%&gt;%</span> <span class="fu">mutate_if</span>(is.numeric,scale) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
