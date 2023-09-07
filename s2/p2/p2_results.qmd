@@ -1,0 +1,79 @@
+---
+title: "Friends and Role Models Pilot"
+format: html
+toc: true
+editor: visual
+
+---
+
+I ran a quick pilot with N = 160 people on prolific. People seemed to understand the survey, and took a median time of 2.43 minutes to complete the survey. We found that: 
+
+test
+
+- When controlling for demographics, and square rooting minutes of exercise, exemplar minutes seem more correlated to high standards for exercise than friend minutes (betas of .24 vs. .14 respectively, bivariate rs of .25 and .23).
+- Peers matter most for deciding midpoint scale standards (betas and R2s are higher)
+- Exercise habits of peers correlates positively with self-reported self control (betas of .06 and .04 for exemplars and friends when controlling for demographics; rs of .13 and .10 in bivariate correlations). This seems to contradict our previous findings, but note that we are not controlling for objective behavior as we controlled for GPA in our school studies. Also, friends and role models are similarly correlated.
+- If your exemplars exercise a lot, your friends probably do too (r = .46 for square rooted minutes)
+- Higher standards for exercise translate to lower self-ratings of self-control (rs = -.02, -.03, and -.20 for standards for a 10, 5 and 0, respectively). The standard for 0 seems to matter more, although there is definitely some multicollinearity in these measures. Perhaps it would be useful to average them together?
+
+
+
+## Detailed results
+
+### Table 1. Descriptives
+```{r}
+load("Output_p2.rda")
+table_describe
+```
+### Table 2. Correlations
+```{r}
+table_correlations
+```
+
+### Table 3. Regressions for Standards
+```{r}
+#| fig-width: 10
+knitr::include_graphics("regressions_standards.png",dpi = 1000)
+```
+
+### Table 4. Regressions predicting self control from standards
+```{r}
+#| fig-width: 10
+knitr::include_graphics("regressions_self_control.png",dpi = 1000)
+```
+
+
+### Figures. Descriptive
+```{r}
+plot_histograms
+plot_bars
+```
+
+
+### Figures. With sqrt
+```{r}
+plot_sc_friends_exemplars_sqrt
+```
+
+```{r}
+#| fig-width: 10
+plot_main_sqrt
+```
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+# plot_main_bendy
+```
+
+### Figures. Raw
+```{r}
+plot_sc_friends_exemplars
+```
+
+```{r}
+#| fig-width: 10
+plot_main
+```
+
+
