@@ -79,7 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#compared-to-before-people-now-report-the-same-level-of-self-control-across-conditions." id="toc-compared-to-before-people-now-report-the-same-level-of-self-control-across-conditions." class="nav-link active" data-scroll-target="#compared-to-before-people-now-report-the-same-level-of-self-control-across-conditions.">Compared to before, people now report the same level of self-control across conditions.</a></li>
+  <li><a href="#no-differences-in-self-control-across-domains" id="toc-no-differences-in-self-control-across-domains" class="nav-link active" data-scroll-target="#no-differences-in-self-control-across-domains">No differences in self control across domains</a></li>
   <li><a href="#we-still-replicate-our-reference-bias-findings-with-some-heterogeneity." id="toc-we-still-replicate-our-reference-bias-findings-with-some-heterogeneity." class="nav-link" data-scroll-target="#we-still-replicate-our-reference-bias-findings-with-some-heterogeneity.">We still replicate our reference bias findings, with some heterogeneity.</a></li>
   <li><a href="#exemplars-predict-standars-and-more-so-than-friends" id="toc-exemplars-predict-standars-and-more-so-than-friends" class="nav-link" data-scroll-target="#exemplars-predict-standars-and-more-so-than-friends">Exemplars predict standars, and more so than friends…</a></li>
   <li><a href="#standards-predict-self-ratings" id="toc-standards-predict-self-ratings" class="nav-link" data-scroll-target="#standards-predict-self-ratings">Standards predict self ratings</a></li>
@@ -119,8 +119,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>I ran a quick pilot with N = 302 people on prolific. People seemed to understand the survey, and took a median time of 2.71 minutes to complete the survey. We found that:&nbsp;</p>
-<section id="compared-to-before-people-now-report-the-same-level-of-self-control-across-conditions." class="level3">
-<h3 class="anchored" data-anchor-id="compared-to-before-people-now-report-the-same-level-of-self-control-across-conditions.">Compared to before, people now report the same level of self-control across conditions.</h3>
+<section id="no-differences-in-self-control-across-domains" class="level3">
+<h3 class="anchored" data-anchor-id="no-differences-in-self-control-across-domains">No differences in self control across domains</h3>
 <p>These domains seem to have less social desirability compared to punctuality and drinking from before.</p>
 <div class="cell">
 <details>
@@ -162,38 +162,86 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="standards-predict-self-ratings">Standards predict self ratings</h3>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data.z <span class="sc">%&gt;%</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(sc_self <span class="sc">~</span> standard10 <span class="sc">+</span> self_minutes, <span class="at">data =</span> .) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  stargazer<span class="sc">::</span><span class="fu">stargazer</span>(<span class="at">type =</span> <span class="st">"html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data.z <span class="ot">=</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(condition) <span class="sc">%&gt;%</span> <span class="fu">mutate_if</span>(is.numeric,scale) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<pre><code>`mutate_if()` ignored the following grouping variables:
+• Column `condition`</code></pre>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all <span class="ot">=</span> data.z <span class="sc">%&gt;%</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> standard10 <span class="sc">+</span> self_minutes, <span class="at">data =</span> .)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> standard10 <span class="sc">+</span> self_minutes, <span class="at">data =</span> data.z <span class="sc">%&gt;%</span> <span class="fu">filter</span>(condition <span class="sc">==</span> <span class="st">"bedtime"</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> standard10 <span class="sc">+</span> self_minutes, <span class="at">data =</span> data.z <span class="sc">%&gt;%</span> <span class="fu">filter</span>(condition <span class="sc">==</span> <span class="st">"healthy eating"</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> standard10 <span class="sc">+</span> self_minutes, <span class="at">data =</span> data.z <span class="sc">%&gt;%</span> <span class="fu">filter</span>(condition <span class="sc">==</span> <span class="st">"saving"</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> standard10 <span class="sc">+</span> self_minutes, <span class="at">data =</span> data.z <span class="sc">%&gt;%</span> <span class="fu">filter</span>(condition <span class="sc">==</span> <span class="st">"work"</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>stargazer<span class="sc">::</span><span class="fu">stargazer</span>(<span class="at">type =</span> <span class="st">"html"</span>, <span class="at">column.labels =</span> <span class="fu">c</span>(<span class="st">"All"</span>,<span class="st">"Bedtime"</span>,<span class="st">"Healthy Eating"</span>,<span class="st">"Saving"</span>,<span class="st">"Work"</span>), all, m1,m2,m3,m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 <table style="text-align:center">
 <tbody><tr>
-<td colspan="2" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
-<td>
+<td colspan="5">
 <em>Dependent variable:</em>
 </td>
 </tr>
 <tr>
 <td>
 </td>
-<td colspan="1" style="border-bottom: 1px solid black">
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="5">
+sc_self
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-sc_self
+All
+</td>
+<td>
+Bedtime
+</td>
+<td>
+Healthy Eating
+</td>
+<td>
+Saving
+</td>
+<td>
+Work
 </td>
 </tr>
 <tr>
-<td colspan="2" style="border-bottom: 1px solid black">
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
+<td>
+(4)
+</td>
+<td>
+(5)
+</td>
+</tr>
+<tr>
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
@@ -201,18 +249,50 @@ sc_self
 standard10
 </td>
 <td>
--1.231<sup>***</sup>
+-0.269<sup>***</sup>
+</td>
+<td>
+-0.385<sup>***</sup>
+</td>
+<td>
+-0.276<sup>**</sup>
+</td>
+<td>
+-0.385<sup>***</sup>
+</td>
+<td>
+0.044
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.133)
+(0.050)
+</td>
+<td>
+(0.075)
+</td>
+<td>
+(0.110)
+</td>
+<td>
+(0.081)
+</td>
+<td>
+(0.151)
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -222,18 +302,50 @@ standard10
 self_minutes
 </td>
 <td>
-1.310<sup>***</sup>
+0.598<sup>***</sup>
+</td>
+<td>
+0.707<sup>***</sup>
+</td>
+<td>
+0.634<sup>***</sup>
+</td>
+<td>
+0.776<sup>***</sup>
+</td>
+<td>
+0.093
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.133)
+(0.050)
+</td>
+<td>
+(0.075)
+</td>
+<td>
+(0.110)
+</td>
+<td>
+(0.081)
+</td>
+<td>
+(0.151)
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -243,14 +355,38 @@ self_minutes
 Constant
 </td>
 <td>
+-0.000
+</td>
+<td>
 0.000
 </td>
+<td>
+-0.000
+</td>
+<td>
+-0.000
+</td>
+<td>
+-0.000
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.050)
+(0.047)
+</td>
+<td>
+(0.073)
+</td>
+<td>
+(0.098)
+</td>
+<td>
+(0.074)
+</td>
+<td>
+(0.148)
 </td>
 </tr>
 <tr>
@@ -258,9 +394,17 @@ Constant
 </td>
 <td>
 </td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
 </tr>
 <tr>
-<td colspan="2" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
@@ -270,13 +414,37 @@ Observations
 <td>
 302
 </td>
+<td>
+92
+</td>
+<td>
+73
+</td>
+<td>
+90
+</td>
+<td>
+47
+</td>
 </tr>
 <tr>
 <td style="text-align:left">
 R<sup>2</sup>
 </td>
 <td>
-0.246
+0.329
+</td>
+<td>
+0.523
+</td>
+<td>
+0.321
+</td>
+<td>
+0.516
+</td>
+<td>
+0.012
 </td>
 </tr>
 <tr>
@@ -284,7 +452,19 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.241
+0.325
+</td>
+<td>
+0.512
+</td>
+<td>
+0.302
+</td>
+<td>
+0.505
+</td>
+<td>
+-0.033
 </td>
 </tr>
 <tr>
@@ -292,7 +472,19 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-0.871 (df = 299)
+0.818 (df = 299)
+</td>
+<td>
+0.699 (df = 89)
+</td>
+<td>
+0.835 (df = 70)
+</td>
+<td>
+0.704 (df = 87)
+</td>
+<td>
+1.017 (df = 44)
 </td>
 </tr>
 <tr>
@@ -300,18 +492,30 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-48.667<sup>***</sup> (df = 2; 299)
+73.346<sup>***</sup> (df = 2; 299)
+</td>
+<td>
+48.724<sup>***</sup> (df = 2; 89)
+</td>
+<td>
+16.572<sup>***</sup> (df = 2; 70)
+</td>
+<td>
+46.380<sup>***</sup> (df = 2; 87)
+</td>
+<td>
+0.256 (df = 2; 44)
 </td>
 </tr>
 <tr>
-<td colspan="2" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 <em>Note:</em>
 </td>
-<td style="text-align:right">
+<td colspan="5" style="text-align:right">
 <sup><em></em></sup><em>p&lt;0.1; <sup><strong></strong></sup><strong>p&lt;0.05; <sup></sup></strong></em>p&lt;0.01
 </td>
 </tr>
@@ -324,7 +528,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/paths.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/paths.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="figures/paths.png" class="img-fluid" width="1088"></p>
@@ -334,7 +538,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>multigroup_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>multigroup_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -938,7 +1142,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/plot_diffs.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/plot_diffs.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="figures/plot_diffs.png" class="img-fluid" width="1500"></p>
@@ -948,16 +1152,16 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condition) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean_cl_normal</span>(importance_self)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> condition, <span class="at">y =</span> y)) <span class="sc">+</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">data =</span> data, <span class="fu">aes</span>(<span class="at">y =</span> importance_self), <span class="at">alpha =</span> .<span class="dv">2</span>, <span class="at">width =</span> .<span class="dv">1</span>)<span class="sc">+</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ymin, <span class="at">ymax =</span> ymax),<span class="at">width =</span> .<span class="dv">2</span>)<span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Reported Importance (0-10)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condition) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean_cl_normal</span>(importance_self)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> condition, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">data =</span> data, <span class="fu">aes</span>(<span class="at">y =</span> importance_self), <span class="at">alpha =</span> .<span class="dv">2</span>, <span class="at">width =</span> .<span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ymin, <span class="at">ymax =</span> ymax),<span class="at">width =</span> .<span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Reported Importance (0-10)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="p3_results_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
@@ -968,17 +1172,17 @@ F Statistic
 <h3 class="anchored" data-anchor-id="results-are-not-moderated-by-importance">Results are not moderated by importance</h3>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>datai <span class="ot">=</span> data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(condition) <span class="sc">|&gt;</span> <span class="fu">mutate_if</span>(is.numeric,scale) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>datai <span class="ot">=</span> data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(condition) <span class="sc">|&gt;</span> <span class="fu">mutate_if</span>(is.numeric,scale) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <pre><code>`mutate_if()` ignored the following grouping variables:
 • Column `condition`</code></pre>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes <span class="sc">+</span> self_minutes, datai) </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(standard10 <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes, datai)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">lm</span>(exemplar_minutes <span class="sc">~</span> importance_self, datai)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">lm</span>(friend_minutes <span class="sc">~</span> importance_self, datai)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>stargazer<span class="sc">::</span><span class="fu">stargazer</span>(m1,m2,m3,m4,<span class="at">type =</span> <span class="st">"html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes <span class="sc">+</span> self_minutes, datai) </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">=</span> <span class="fu">lm</span>(standard10 <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes, datai)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">=</span> <span class="fu">lm</span>(exemplar_minutes <span class="sc">~</span> importance_self, datai)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">=</span> <span class="fu">lm</span>(friend_minutes <span class="sc">~</span> importance_self, datai)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>stargazer<span class="sc">::</span><span class="fu">stargazer</span>(m1,m2,m3,m4,<span class="at">type =</span> <span class="st">"html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 <table style="text-align:center">
@@ -1353,21 +1557,21 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>make_table <span class="ot">=</span> <span class="cf">function</span>(test_condition){</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  datai <span class="ot">=</span> data <span class="sc">|&gt;</span> <span class="fu">filter</span>(condition <span class="sc">==</span> test_condition) <span class="sc">|&gt;</span> <span class="fu">mutate_if</span>(is.numeric,scale)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  m1 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes <span class="sc">+</span> self_minutes, datai) </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  m2 <span class="ot">=</span> <span class="fu">lm</span>(standard10 <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes, datai)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  m3 <span class="ot">=</span> <span class="fu">lm</span>(exemplar_minutes <span class="sc">~</span> importance_self, datai)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  m4 <span class="ot">=</span> <span class="fu">lm</span>(friend_minutes <span class="sc">~</span> importance_self, datai)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  stargazer<span class="sc">::</span><span class="fu">stargazer</span>(m1,m2,m3,m4,<span class="at">type =</span> <span class="st">"html"</span>)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>make_table <span class="ot">=</span> <span class="cf">function</span>(test_condition){</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  datai <span class="ot">=</span> data <span class="sc">|&gt;</span> <span class="fu">filter</span>(condition <span class="sc">==</span> test_condition) <span class="sc">|&gt;</span> <span class="fu">mutate_if</span>(is.numeric,scale)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  m1 <span class="ot">=</span> <span class="fu">lm</span>(sc_self <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes <span class="sc">+</span> self_minutes, datai) </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  m2 <span class="ot">=</span> <span class="fu">lm</span>(standard10 <span class="sc">~</span> importance_self<span class="sc">*</span>exemplar_minutes, datai)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  m3 <span class="ot">=</span> <span class="fu">lm</span>(exemplar_minutes <span class="sc">~</span> importance_self, datai)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  m4 <span class="ot">=</span> <span class="fu">lm</span>(friend_minutes <span class="sc">~</span> importance_self, datai)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  stargazer<span class="sc">::</span><span class="fu">stargazer</span>(m1,m2,m3,m4,<span class="at">type =</span> <span class="st">"html"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="bedtime" class="level4">
 <h4 class="anchored" data-anchor-id="bedtime">Bedtime</h4>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"bedtime"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"bedtime"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 <table style="text-align:center">
@@ -1743,7 +1947,7 @@ F Statistic
 <h4 class="anchored" data-anchor-id="healthy-eating">Healthy eating</h4>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"healthy eating"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"healthy eating"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 <table style="text-align:center">
@@ -2119,7 +2323,7 @@ F Statistic
 <h4 class="anchored" data-anchor-id="saving">Saving</h4>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"saving"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"saving"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 <table style="text-align:center">
@@ -2495,7 +2699,7 @@ F Statistic
 <h4 class="anchored" data-anchor-id="work">Work</h4>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"work"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_table</span>(<span class="st">"work"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 <table style="text-align:center">
@@ -2875,7 +3079,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>table_describe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>table_describe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -3605,7 +3809,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>table_correlations <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>table_correlations <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -4404,7 +4608,7 @@ F Statistic
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>table_correlations_drinking <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>() <span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Work"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>table_correlations_drinking <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>() <span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Work"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -5206,7 +5410,7 @@ F Statistic
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>table_correlations_exercise <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>() <span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Healthy Eating"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>table_correlations_exercise <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>() <span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Healthy Eating"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -6008,7 +6212,7 @@ F Statistic
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>table_correlations_social_media <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>()<span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Saving"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>table_correlations_social_media <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>()<span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Saving"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -6810,7 +7014,7 @@ F Statistic
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>table_correlations_punctuality <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>() <span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Bedtime"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>table_correlations_punctuality <span class="sc">|&gt;</span> <span class="fu">gt_theme</span>() <span class="sc">|&gt;</span> <span class="fu">tab_header</span>(<span class="st">"Bedtime"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -7617,7 +7821,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/standards.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"figures/standards.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="figures/standards.png" class="img-fluid" width="1050"></p>
@@ -7629,7 +7833,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># knitr::include_graphics("regressions_self_control.png",dpi = 1000)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># knitr::include_graphics("regressions_self_control.png",dpi = 1000)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -7638,7 +7842,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>plot_histograms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plot_histograms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing non-finite values (`stat_bin()`).</code></pre>
@@ -7648,7 +7852,7 @@ F Statistic
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plot_bars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>plot_bars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="p3_results_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid" width="1920"></p>
@@ -7660,19 +7864,19 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_sc_friends_exemplars_sqrt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_sc_friends_exemplars_sqrt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_main_sqrt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_main_sqrt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_main_bendy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_main_bendy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -7681,7 +7885,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plot_sc_friends_exemplars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plot_sc_friends_exemplars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
@@ -7693,7 +7897,7 @@ F Statistic
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_main</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_main</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
