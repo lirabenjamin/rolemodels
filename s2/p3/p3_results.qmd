@@ -8,8 +8,11 @@ code-fold: true
 
 ```{r}
 #| echo: false
+rerun = F
+if(rerun){source("p3_data_checklist.R")}
 load("output/output.rda")
 library(gt)
+
 ```
 
 I ran a quick pilot with N = `r nrow(data)` people on prolific. People seemed to understand the survey, and took a median time of `r mean_duration` minutes to complete the survey. We found that: 
@@ -30,7 +33,7 @@ Exemplars negatively predict self ratings of self control for bedtime, and healt
 
 ```{r}
 #| fig-width: 15
-knitr::include_graphics("output/table1.png")
+knitr::include_graphics("output/table1.png", dpi = 100)
 ```
 
 ### Exemplars predict standars, and more so than friends...
@@ -58,7 +61,7 @@ And, like before it looks pretty consistent with what we hypothesized.
 knitr::include_graphics("figures/paths.png")
 ```
 
-There is however some heterogeneity; in this case the unconstrained model fits significantly better (*p* = `r constrain_p`). We are also underpowered to detect any difference between friends and role models either for standards or for behavior.
+There is however some heterogeneity; in this case the unconstrained model fits significantly better (*p* = `r constrain_p`). We are also underpowered to detect any difference between friends and role models either for standards (*p* = `r p_friend_role_standards`) or for behavior (*p* = `r p_friend_role_behavior`).
 
 ```{r}
 multigroup_output
@@ -89,7 +92,7 @@ data %>%
 
 ```{r}
 #| output: asis
-datai = data |> group_by(condition) |> mutate_if(is.numeric,scale)
+datai = data |> group_by(condition) |> mutate_if(is.numeric,scale) %>% ungroup()
 m1 = lm(sc_self ~ importance_self*exemplar_minutes + self_minutes, datai) 
 m2 = lm(standard10 ~ importance_self*exemplar_minutes, datai)
 m3 = lm(exemplar_minutes ~ importance_self, datai)
@@ -99,8 +102,8 @@ stargazer::stargazer(m1,m2,m3,m4,type = "html")
 
 looking at specific domains... 
 ```{r}
-make_table = function(condition){
-  datai = data |> filter(condition == condition) |> mutate_if(is.numeric,scale)
+make_table = function(test_condition){
+  datai = data |> filter(condition == test_condition) |> mutate_if(is.numeric,scale)
   m1 = lm(sc_self ~ importance_self*exemplar_minutes + self_minutes, datai) 
   m2 = lm(standard10 ~ importance_self*exemplar_minutes, datai)
   m3 = lm(exemplar_minutes ~ importance_self, datai)
@@ -108,11 +111,33 @@ make_table = function(condition){
   stargazer::stargazer(m1,m2,m3,m4,type = "html")
 }
 ```
+
+#### Bedtime
+
 ```{r}
 #| output: asis
 make_table("bedtime")
+```
+
+#### Healthy eating
+
+
+```{r}
+#| output: asis
 make_table("healthy eating")
+```
+
+#### Saving
+
+```{r}
+#| output: asis
 make_table("saving")
+```
+
+#### Work
+
+```{r}
+#| output: asis
 make_table("work")
 ```
 
@@ -140,7 +165,7 @@ table_correlations_punctuality |> gt_theme() |> tab_header("Bedtime")
 
 ```{r}
 #| fig-width: 10
-knitr::include_graphics("figures/standards.png",dpi = 1000)
+knitr::include_graphics("figures/standards.png")
 ```
 
 ### Table 4. Regressions predicting self control from standards
@@ -153,6 +178,8 @@ knitr::include_graphics("figures/standards.png",dpi = 1000)
 ### Figures. Descriptive
 
 ```{r}
+#| fig-width: 20
+#| fig-height: 15
 plot_histograms
 plot_bars
 ```

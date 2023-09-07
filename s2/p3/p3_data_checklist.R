@@ -613,10 +613,10 @@ constrain_p = anova_constrain$`Pr(>Chisq)`[[2]] %>% Ben::formatps()
 
 # Wald test
 test_result <- lavTestWald(fit, constraints = "fs - es == 0")
-test_result
+p_friend_role_standards = test_result$p.value %>% Ben::formatps()
 
 test_result <- lavTestWald(fit, constraints = "fb - eb == 0")
-test_result
+p_friend_role_behavior = test_result$p.value %>% Ben::formatps()
 
 
 print(test_result)
