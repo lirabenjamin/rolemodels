@@ -1,0 +1,27 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.25)  7 SEP 2023 19:53
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**/var/folders/4p/bxjk_gwj73b5yx0ny3137d800000gr/T//Rtmp4y5hM2/file8fb43fb84175.tex
+(/var/folders/4p/bxjk_gwj73b5yx0ny3137d800000gr/T//Rtmp4y5hM2/file8fb43fb84175.tex
+LaTeX2e <2023-06-01> patch level 1
+L3 programming layer <2023-08-11>
+
+! LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.4 \begin{table}
+                 [!htbp] \centering 
+Here is how much of TeX's memory you used:
+ 18 strings out of 477119
+ 736 string characters out of 5810755
+ 1916254 words of memory out of 5000000
+ 21159 multiletter control sequences out of 15000+600000
+ 558069 words of font info for 36 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 13i,0n,12p,196b,16s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+!  ==> Fatal error occurred, no output PDF file produced!

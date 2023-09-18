@@ -595,12 +595,14 @@ ggsave("s2/p3/figures/standards.png", width = 7, height = 3)
 # some lavaan
 library(lavaan)
 
+
 model = "
 sc_self ~ standard10 + self_minutes
 self_minutes ~ standard10 + fb*friend_minutes + eb*exemplar_minutes
 standard10 ~ fs*friend_minutes + es*exemplar_minutes
 friend_minutes~~exemplar_minutes"
 data.z = data %>% group_by(condition)  %>% mutate_if(is.numeric, scale) %>% ungroup 
+write_rds(data.z, "s2/p3/data/lavaan_data.rds")
 fit_constrain = sem(model, data = data.z, group = "condition", group.equal = c("regressions"))
 fit = sem(model, data = data.z, group = "condition")
 fit %>% summary(standardized = T, fit.measures = T)
