@@ -285,6 +285,22 @@ data %>%
   fmt_number(columns = vars(exemplars, friends, avg_cross), decimals = 2)  %>%
   gt_theme()
 
+# distribution of friend and role model minutes
+data %>% 
+  select(condition, friend1_minutes, friend2_minutes, exemplar1_minutes, exemplar2_minutes) %>% 
+  pivot_longer(-condition)  %>% 
+  mutate(name = str_remove(name, "_minutes"),
+         name = tm::removeNumbers(name)) %>%
+  group_by(condition) %>%
+  summarise(
+    mean = mean(value, na.rm = T),
+    sd = sd(value, na.rm = T),
+    min = min(value, na.rm = T),
+    max = max(value, na.rm = T),
+    min3sd = mean - 2.5*sd,
+    max3sd = mean + 2.5*sd
+  )
+
 # Dropping names now
 data = data %>% 
   select(
