@@ -744,21 +744,36 @@ multigroup_output = parameterEstimates(fit, standardized = T) %>%
   filter(op %in% c("~", "~~")) %>% 
   select(lhs, rhs, est, std.all, pvalue, group) %>% 
   as_tibble() %>%
-  # mutate(group = case_match(
-  #   group,
-  #   1 ~ "bedtime",
-  #   2~ "saving",
-  #   3~"healthy eating" ,
-  #   4~"work"
-  # )) %>%
+  mutate(group = case_match(
+    group,
+    1 ~ "punctuality",
+    2~ "social media",
+    3~"exercise" ,
+    4~"healthy eating",
+    5~"saving",
+    6~"bedtime",
+  )) %>%
+  mutate_at(vars(lhs, rhs), ~ case_match(.,
+  "sc_self" ~ "Self-Control",
+  "standard10" ~ "Standards",
+  "self_minutes" ~ "Own Behavior",
+  "friend_minutes" ~ "Friend Behavior",
+  "exemplar_minutes" ~ "Role Model Behavior"
+  )
+  ) %>%
   filter(lhs != rhs) %>%
-  pivot_wider(names_from = group, values_from = c(est, std.all, pvalue), names_glue = "{group}_{.value}") %>%
-  # select(lhs, rhs, starts_with("bedtime"), starts_with("healthy"), starts_with("work"), starts_with("saving"))  %>%  
+  select(beta = est, p = pvalue, everything(),-std.all) %>%
+  pivot_wider(names_from = group, values_from = c(beta, p), names_glue = "{group}_{.value}") %>%
+  select(
+    lhs, rhs, 
+    , starts_with('exercise'),starts_with("bedtime"), starts_with("healthy"), 
+    starts_with("saving"), starts_with("punctuality"), starts_with("social")
+    )  %>%  
   gt()  %>% 
   tab_spanner_delim("_") %>%
   fmt_number() %>%
   gt_theme()
-
+multigroup_output
 ## IMportance 
 model_constrained = "
 sc_self ~ standard10 + self_minutes
