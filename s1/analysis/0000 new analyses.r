@@ -450,8 +450,10 @@ lms = expand_grid(
 
 write_rds(lms, "s1/output/lms.rds")
 
+lms = read_rds("s1/output/lms.rds")
+
 lms %>%
-  filter(exclusive) %>%
+  filter(!exclusive) %>%
   filter(mode != "all") %>% 
   mutate(model = map(model, tidy, conf.int = T)) %>%
   unnest(model) %>%
@@ -476,7 +478,68 @@ lms %>% filter(attribute == "avg_scw_tr", delta == 1) %>%
 mutate(model = map(model, glance)) %>%
 unnest(model)
 
+lms %>% 
+filter(delta == 1, mode == "out", exclusive == T) %>% 
+mutate(model = map(model, tidy)) %>%
+unnest(model) %>% 
+filter(term %in% c("coregpa", "friend", "exemplar")) %>% 
+ggplot(aes(term, estimate))+
+geom_col()+ 
+facet_wrap(~attribute, scales = "free_y")
 
+
+## Look at GPA.
+# run regressions ####
+library(broom)
+run_reg = function(d)
+{d %>% 
+  scale_dataset() %>%
+  lm(coregpa ~ friend + exemplar + school + female + eth + ell + sped + frpl + age, data = .)
+}
+run_reg2 = function(d)
+{d %>% 
+  scale_dataset() %>%
+  lm(avg_scw_tr ~ friend + exemplar + school + female + eth + ell + sped + frpl + age, data = .)
+}
+# mode: out is people you nominate, in is people who nominate you, all is both
+lms = expand_grid(
+  delta = 1,
+  attribute = c("coregpa", "avg_scw_tr"), 
+  mode = c("out"),
+  exclusive = c(T)
+  ) %>% 
+  mutate(
+    data = pmap(list(attribute, delta,mode,exclusive), function(attribute, delta, mode,exclusive) make_dataset(attr_long, attribute,delta, mode, exclusive)),
+    data = map(data, collapse_time),
+    data = map(data, scale_dataset),
+    model_gpa = map(data, run_reg),
+    model_avg_sc_tr = map(data, run_reg2)
+    )
+
+lms %>% 
+  pivot_longer(model_gpa:model_avg_sc_tr, names_to = "model_num", values_to = "model") %>% 
+  slice(1, 4) %>% 
+  mutate(tidy = model %>% map(tidy, conf.int = T)) %>%
+  unnest(tidy) %>%
+  filter(term %in% c("friend","exemplar")) %>%
+  mutate(attribute = factor(attribute, levels = c("coregpa", "avg_scw_tr"), labels = c("Core GPA","Teacher Rated Self-Control"))) %>%
+  ggplot(aes(x = term, y = estimate))+
+  geom_col()+
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = .3)+
+  facet_wrap(~attribute, scales = "free_y")+
+  labs(x = NULL, y = "Beta")
+ggsave('s1/figures/0000 regression_behavior.pdf', width = 6, height = 3, units = 'in')
+ 
+lms %>% 
+  mutate(tidy = model %>% map(tidy, conf.int = T)) %>%
+  unnest(tidy) %>%
+  filter(term %in% c("friend","exemplar")) %>% 
+  ggplot(aes(term, estimate, ymin = conf.low, ymax = conf.high))+
+  geom_col()+
+  geom_errorbar(width = .3)
+
+
+car::linearHypothesis(lms$model[[1]], c("friend = exemplar"))
 # spatial auto regression
 
 # Normalize matrix
